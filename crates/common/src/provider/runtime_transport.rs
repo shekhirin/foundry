@@ -414,6 +414,18 @@ mod tests {
     use super::*;
     use reqwest::header::HeaderMap;
 
+    #[test]
+    fn test_build_auth_with_jwt_secret() {
+        let auth =
+            build_auth("0000000000000000000000000000000000000000000000000000000000000000".into())
+                .unwrap();
+
+        let Authorization::Bearer(token) = auth else {
+            unreachable!("JWT auth should use bearer tokens")
+        };
+        assert_eq!(token.split('.').count(), 3);
+    }
+
     #[tokio::test]
     async fn test_user_agent_header() {
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
